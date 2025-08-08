@@ -1,0 +1,38 @@
+# Dockerfile pour le développement du backend
+FROM node:18-alpine
+
+# Installer curl pour les health checks
+RUN apk add --no-cache curl bash
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY package*.json ./
+
+# Installer toutes les dépendances (dev incluses)
+RUN npm install
+
+# Copier les scripts
+COPY wait-for-db.js ./
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
+
+# Créer un utilisateur non-root
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# Changer la propriété des fichiers
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# Exposer le port
+EXPOSE 3001
+
+# Variables d'environnement par défaut
+ENV NODE_ENV=development
+ENV PORT=3001
+
+# Point d'entrée avec attente de la DB
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["npm", "run", "dev"]

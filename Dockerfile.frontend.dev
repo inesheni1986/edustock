@@ -1,0 +1,28 @@
+# Dockerfile pour le développement du frontend
+FROM node:18-alpine
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm install
+
+# Créer un utilisateur non-root
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# Changer la propriété des fichiers
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# Exposer le port Vite
+EXPOSE 5173
+
+# Variables d'environnement
+ENV NODE_ENV=development
+
+# Commande de démarrage avec hot reload
+CMD ["npm", "run", "dev"]

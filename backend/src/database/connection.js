@@ -1,21 +1,23 @@
 const sql = require('mssql');
 
 const config = {
-  server: process.env.DB_SERVER || 'WCT0004\\MSSQLSERVER2022',
+  server: process.env.DB_SERVER || 'localhost',
   port: parseInt(process.env.DB_PORT) || 1433,
   database: process.env.DB_NAME || 'lab_stock_management',
   user: process.env.DB_USER || 'sa',
-  password: process.env.DB_PASSWORD || 'ordiges',
+  password: process.env.DB_PASSWORD || 'StrongPassword123!',
   options: {
-    encrypt: process.env.DB_ENCRYPT === 'true',
-    trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
+    encrypt: process.env.DB_ENCRYPT === 'true' || false,
+    trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true' || true,
     enableArithAbort: true
   },
   pool: {
     max: 10,
     min: 0,
     idleTimeoutMillis: 30000
-  }
+  },
+  connectionTimeout: 30000,
+  requestTimeout: 30000
 };
 
 let pool;
